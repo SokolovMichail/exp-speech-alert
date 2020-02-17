@@ -1,5 +1,6 @@
 package ru.cib.expspeechalert.SpeechSynthesiser
 
+import com.sun.speech.freetts.audio.SingleFileAudioPlayer
 import org.springframework.stereotype.Component
 
 // Java code to convert text to speech
@@ -11,7 +12,9 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.speech.synthesis.SynthesizerProperties
 import com.sun.swing.internal.plaf.synth.resources.synth
-import com.sun.speech.freetts.audio.SingleFileAudioPlayer
+import java.nio.file.Paths
+import java.nio.file.Path
+
 import javax.sound.sampled.AudioFileFormat
 
 
@@ -26,7 +29,7 @@ class SpeechHook {
     {
         System.setProperty(
                 "freetts.voices",
-                "com.sun.speech.freetts.ru.ru" + ".cmu_us_kal.KevinVoiceDirectory")
+                "com.sun.speech.freetts.en.us" + ".cmu_us_kal.KevinVoiceDirectory")
         // Register Engine
         Central.registerEngineCentral(
                 "com.sun.speech.freetts" + ".jsapi.FreeTTSEngineCentral")
@@ -45,13 +48,13 @@ class SpeechHook {
         val desc = synthesizer.engineModeDesc as SynthesizerModeDesc
         val jsapiVoices = desc.getVoices()
         val jsapiVoice = jsapiVoices[0]
-
+        val path_tmp = Paths.get(path,text)
         /* Non-JSAPI modification of voice audio player
      */
 
-            val freettsVoice = (jsapiVoice as com.sun.speech.freetts.jsapi.FreeTTSVoice).voice
-            freettsVoice.audioPlayer = SingleFileAudioPlayer(path, AudioFileFormat.Type.WAVE)
-
+        val freettsVoice = (jsapiVoice as com.sun.speech.freetts.jsapi.FreeTTSVoice).voice
+        freettsVoice.audioPlayer = SingleFileAudioPlayer(path_tmp.toString(), AudioFileFormat.Type.WAVE)
+        print(path_tmp.toString())
         for (chr in text)
         {
             freettsVoice.speak(chr.toString())
@@ -65,6 +68,7 @@ class SpeechHook {
         val desc = synthesizer.engineModeDesc as SynthesizerModeDesc
         val jsapiVoices = desc.getVoices()
         val jsapiVoice = jsapiVoices[0]
+        val path_tmp = Paths.get(path,"message.wav")
 
         /* Non-JSAPI modification of voice audio player
      */
