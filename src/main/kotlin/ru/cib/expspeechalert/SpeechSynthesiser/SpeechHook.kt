@@ -22,6 +22,35 @@ import javax.sound.sampled.AudioFileFormat
 class SpeechHook {
 
     lateinit var synthesizer : Synthesizer
+    val milCodeMap = mapOf<Char,String>(
+            'a' to "Alpha",
+            'b' to "Bravo",
+            'c' to "Charlie",
+            'd' to "Delta",
+            'e' to  "Echo",
+            'f' to "Foxtrot",
+            'g' to "Golf",
+            'h' to "Hotel",
+            'i' to "India",
+            'j' to "Juliet",
+            'k' to "Kilo",
+            'l' to "Lima",
+            'm' to "Mike",
+            'n' to "November",
+            'o' to "Oscar",
+            'p' to "Papa",
+            'q' to "Quebec",
+            'r' to "Romeo",
+            's' to "Sierra",
+            't' to "Tango",
+            'u' to "Uniform",
+            'v' to "Victor",
+            'w' to "Whiskey",
+            'x' to "X-ray",
+            'z' to "Zulu"
+
+
+    )
     //lateinit var props :SynthesizerProperties
 
     @PostConstruct
@@ -58,7 +87,7 @@ class SpeechHook {
         for (chr in text)
         {
             freettsVoice.speak(chr.toString())
-            print(1)
+            //print(1)
         }
         freettsVoice.audioPlayer.close()
 
@@ -77,6 +106,33 @@ class SpeechHook {
         freettsVoice.audioPlayer = SingleFileAudioPlayer(path, AudioFileFormat.Type.WAVE)
 
         freettsVoice.speak(text)
+        freettsVoice.audioPlayer.close()
+
+    }
+
+    fun generate_server_name_mil(text: String,path:String) {
+        val desc = synthesizer.engineModeDesc as SynthesizerModeDesc
+        val jsapiVoices = desc.getVoices()
+        val jsapiVoice = jsapiVoices[0]
+        val path_tmp = Paths.get(path,text)
+        /* Non-JSAPI modification of voice audio player
+     */
+
+        val freettsVoice = (jsapiVoice as com.sun.speech.freetts.jsapi.FreeTTSVoice).voice
+        freettsVoice.audioPlayer = SingleFileAudioPlayer(path_tmp.toString(), AudioFileFormat.Type.WAVE)
+        print(path_tmp.toString())
+        for (chr in text)
+        {
+            if (milCodeMap.containsKey(chr))
+            {
+                freettsVoice.speak(milCodeMap[chr])
+            }
+            else
+            {
+                freettsVoice.speak(chr.toString())
+            }
+            //print(1)
+        }
         freettsVoice.audioPlayer.close()
 
     }

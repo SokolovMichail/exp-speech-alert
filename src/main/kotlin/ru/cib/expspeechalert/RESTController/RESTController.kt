@@ -20,4 +20,11 @@ class RESTController(
     {
         speechHook.generate_message(message,path)
     }
+    @GetMapping("/generateservernamemil/{server}&{path}")
+    fun voice_server_mil(@PathVariable server:String,@PathVariable path:String)
+    {
+        speechHook.generate_server_name_mil(server,path)
+    }
+
+
 }
